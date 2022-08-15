@@ -2,10 +2,11 @@ from functools import reduce
 
 alphabet = []
 
-def set_alphabet(regex):
+def get_alphabet(regex):
     global alphabet
     alphabet.clear()
     alphabet = [i for i in regex if i != '+' and i != '*' and i != '(' and i != ')']
+    return alphabet
 
 def remove_epsilon(regex):
     temp = ''
@@ -45,6 +46,8 @@ def v(regex):
         return 'ε'   
 
 def derive(regex, character):
+
+    regex = regex.replace(' ', '')
     
     if regex == 'ε' or regex == '∅':
         return '∅'
@@ -60,12 +63,8 @@ def derive(regex, character):
         temp_2 = list(map(lambda x: derive(x, character), temp))
         return simplify('+'.join(temp_2))
     
-    # TODO Arreglar esta shitex
     elif len(regex) > 1 and not (len(regex) == 2 and regex.endswith('*')):
-        temp = [regex[i] + regex[i + 1] if i < len(regex) - 1 and regex[i + 1] == '*' else regex[i] for i in range(len(regex))]
-        temp_2 = [i for i in temp if i != '*']
-        temp_4 = reduce(lambda x, y: derive(x, character) + y + '+' + v(x) + derive(y), temp_2)
-        temp_3 = list(map(lambda x: derive(x, character), temp_2))
-        return simplify(''.join(temp_3))
+        return regex[1:] if regex.startswith(character) else '∅'
 
-derive('ab', 'a')
+    elif '*' in regex:
+        return simplify(derive(regex[:-1], character) + '(' + regex + ')')
