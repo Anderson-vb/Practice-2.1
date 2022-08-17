@@ -1,4 +1,3 @@
-from re import template
 from derive import *
 from state import State
 from transition import Transition
@@ -42,4 +41,12 @@ class DFA:
         states.insert(0, initial_state)
         self.states = states
         self.set_names()
+
+    def show_states(self):
+        for x in self.states:
+            print(x.get_name())
+            for y in x.get_transition():
+                print(y.get_character() + ' -> ' + y.get_state().get_regex())
+
+
 
