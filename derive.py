@@ -26,7 +26,29 @@ def remove_parenthesis(regex):
 
 def derive(regex, character):
 
-    regex = regex.replace(' ', '')
+    regex = regex.replace(' ', '') 
+
+    if regex.startswith('('):
+        regex = regex[1:]
+        temp = ''
+        temp_2 = ''
+        before = True
+        for x in regex:
+            if x == ')' and before: 
+                before = False
+                continue
+            if before:
+                temp = temp + x
+            elif not before:
+                temp_2 = temp_2 + x
+
+        if temp_2.startswith('*'):
+            temp_2 = temp_2[1:]
+            return simplify(simplify(derive(temp, character)) + '(' + temp + ')*' + temp_2 if derive(temp, character) != '∅' else '∅')
+        else:
+            temp_3 = simplify(derive(temp, character))
+            temp_4 = temp_3 + temp_2
+            return simplify(temp_4)
     
     if regex == 'ε' or regex == '∅':
         return '∅'
@@ -37,10 +59,10 @@ def derive(regex, character):
     elif len(regex) == 1:
         return '∅'
 
-    #elif '+' in regex:
-    #    temp = regex.split('+')
-    #    temp_2 = list(map(lambda x: derive(x, character), temp))
-    #    return simplify('+'.join(temp_2))
+    elif '+' in regex and not '(' in regex:
+        temp = regex.split('+')
+        temp_2 = list(map(lambda x: derive(x, character), temp))
+        return simplify('+'.join(temp_2))
     
     elif len(regex) > 1 and not (len(regex) == 2 and regex.endswith('*')):
         return regex[1:] if regex.startswith(character) else '∅'
@@ -50,7 +72,7 @@ def derive(regex, character):
 
 
 def read_expresion(regex, character):
-    regex = remove_parenthesis(regex)
+    #regex = remove_parenthesis(regex)
     temp = regex.split('+')
     temp_2 = []
     expression = ''
@@ -77,7 +99,3 @@ def read_expresion(regex, character):
         
     temp_3 = list(map(lambda x: derive(x, character), temp_2))
     return simplify('+'.join(temp_3))
-
-
-print(read_expresion('(ab)b', 'a'))
-print(read_expresion('(ab)(ad)', 'a'))
