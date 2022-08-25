@@ -1,3 +1,4 @@
+from random import getstate
 from derive import *
 from state import State
 from transition import Transition
@@ -53,6 +54,22 @@ class DFA:
         states.insert(0, initial_state)
         self.states = states
         self.set_names()
+        
+        
+    def verify_string(self, text):
+
+        regex = self.states[0].get_regex()
+
+        if regex == text:
+            return True
+
+        while text != 'ε':
+            text = derive(text, text[0])
+            regex = derive(regex, text[0])
+        
+        print(text)
+        print(regex)
+
 
     def show_states(self):
         text = ''
@@ -63,6 +80,5 @@ class DFA:
                 text = text +  y.get_character() + ' -> ' + y.get_state().get_regex() + '\n'
                 print(y.get_character() + ' -> ' + y.get_state().get_regex())
         return text
-
 
 
