@@ -4,7 +4,11 @@ def get_alphabet(regex):
     global alphabet
     alphabet.clear()
     alphabet = [i for i in regex if i != '+' and i != '*' and i != '(' and i != ')']
-    return alphabet
+    temp = []
+    for x in alphabet:
+        if x not in temp:
+            temp.append(x)
+    return temp
 
 def remove_epsilon(regex):
     temp = ''
@@ -99,3 +103,5 @@ def read_expresion(regex, character):
         
     temp_3 = list(map(lambda x: derive(x, character), temp_2))
     return simplify('+'.join(temp_3))
+
+print(derive('(a+b)a + ba', 'b'))

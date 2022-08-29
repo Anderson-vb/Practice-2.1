@@ -19,16 +19,26 @@ class DFA:
         
         alphabet = get_alphabet(initial_state.get_regex())
 
-        states = list(map(lambda x: State(derive(initial_state.get_regex(), x)), alphabet))
+        temp = list(map(lambda x: State(read_expresion(initial_state.get_regex(), x)), alphabet))
 
         for i in range(len(alphabet)):
-            if initial_state.get_regex() == states[i].get_regex():
+            if initial_state.get_regex() == temp[i].get_regex():
                 initial_state.set_transition(Transition(alphabet[i], initial_state))
             else:
-                initial_state.set_transition(Transition(alphabet[i], states[i]))
+                initial_state.set_transition(Transition(alphabet[i], temp[i]))
+
+        states = []
+        states.append(temp[0])
+        for i in temp:
+            esta = False
+            for j in states:
+                if i.get_regex() == j.get_regex():
+                    esta = True
+            if not esta:
+                states.append(i)
 
         for current_state in states:
-            possible_states = list(map(lambda x: State(derive(current_state.get_regex(), x)), alphabet))
+            possible_states = list(map(lambda x: State(read_expresion(current_state.get_regex(), x)), alphabet))
 
             for i in range(len(possible_states)):
                 for j in states:
@@ -64,11 +74,17 @@ class DFA:
             return True
 
         while text != 'ε':
-            text = derive(text, text[0])
             regex = derive(regex, text[0])
-        
-        print(text)
+            text = read_expresion(text, text[0])
+            
         print(regex)
+        print(text)
+
+        if regex == text:
+            return True
+
+        elif len(regex) == 2 and regex.endswith('*'):
+            return True
 
 
     def show_states(self):
