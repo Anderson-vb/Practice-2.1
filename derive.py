@@ -153,10 +153,4 @@ def verify_regex(regex):
         text = text + 'Error: El caracter "*" no puede ir al final de la expresion \n'
         error = True
 
-
-
-
     return [error, text]
-
-
-verify_regex('(a+b)**')

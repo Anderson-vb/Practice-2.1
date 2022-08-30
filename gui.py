@@ -6,59 +6,36 @@ from derive import *
 
 dfa = DFA()
 
+def popup(title, message):
+    top= Toplevel(ventana)
+    top.geometry("500x250")
+    top.title(title)
+    top.config(bg='#001219')
+    error_message = Label(top, text = '', justify=LEFT)
+    error_message.config(font='Monospace', fg='white', bg='#001219', text=message)
+    error_message.grid(row=0, column=0, padx=20, pady=20, columnspan=2)
+
 def generate_afd():
-    # Obtenemos el valor del input
-    value = regex_input.get()
-
-    error_test = verify_regex(value)
-
-    if not error_test[0]:
-        # Creamos estado con la expresion regular ingresada
-        initial_state = State(value)
-        # Creamos afd a partir de la expresion regular
+    user_regex = regex_input.get()
+    verify_regex_error = verify_regex(user_regex)
+    if not verify_regex_error[0]:
+        initial_state = State(user_regex)
         dfa.create_dfa(initial_state)
-        resultado.config(text = dfa.show_states())
+        dfa_label.config(text = dfa.show_states())
     else: 
-        top= Toplevel(ventana)
-        top.geometry("400x250")
-        top.title("Result")
-        top.config(bg='#001219')
-        error_message = Label(top, text = '', justify=LEFT)
-        error_message.config(font='Monospace', fg='white', bg='#001219', text=error_test[1])
-        error_message.grid(row=0, column=0, padx=20, pady=20, columnspan=2)
-
-
+        popup('Result', verify_regex_error[1])
 
 def validate_string():
-
-    value = regex_input.get()
-    error_test = verify_regex(value)
-
-    if not error_test[0]:
-    
-        top= Toplevel(ventana)
-        top.geometry("400x250")
-        top.title("Result")
-        top.config(bg='#001219')
-        resultado_validacion = Label(top, text = '', justify=LEFT)
-        resultado_validacion.config(font='Monospace', fg='white', bg='#001219')
-        resultado_validacion.grid(row=0, column=0, padx=20, pady=20, columnspan=2)
- 
-        result = dfa.verify_string(validar_input.get())
-        if result == 0:
+    user_regex = regex_input.get()
+    verify_regex_error = verify_regex(user_regex)
+    if not verify_regex_error[0]:
+        validate_string_result = dfa.verify_string(validar_input.get())
+        if validate_string_result == 0:
             resultado_validacion.config(text = 'Falso')
         else:
             resultado_validacion.config(text = 'Verdadero')
     else:
-        top= Toplevel(ventana)
-        top.geometry("400x250")
-        top.title("Result")
-        top.config(bg='#001219')
-        error_message = Label(top, text = '', justify=LEFT)
-        error_message.config(font='Monospace', fg='white', bg='#001219', text=error_test[1])
-        error_message.grid(row=0, column=0, padx=20, pady=20, columnspan=2)
-
-
+        popup('Result', verify_regex_error[1])
 
 # Ventana principal
 ventana = Tk()
@@ -97,9 +74,9 @@ button.config(bg='springgreen', borderwidth=0, font='Monospace', highlightbackgr
 button.grid(row=3, column=1, padx=20, pady=20)
 
 # Label donde se mostrará el resultado
-resultado = Label(ventana, text = '', justify=LEFT)
-resultado.config(font='Monospace', fg='white', bg='#001219')
-resultado.grid(row=4, column=0, padx=20, pady=20, columnspan=2)
+dfa_label = Label(ventana, text = '', justify=LEFT)
+dfa_label.config(font='Monospace', fg='white', bg='#001219')
+dfa_label.grid(row=4, column=0, padx=20, pady=20, columnspan=2)
 
 # Label donde se mostrará el resultado de la validacion del string
 resultado_validacion = Label(ventana, text = '', justify=LEFT)
