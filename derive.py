@@ -90,6 +90,7 @@ def read_expresion(regex, character):
                     expression = expression + '+' + temp[i]
                 parenthesis = False
                 temp_2.append(expression)
+                expression = ''
             else:
                 if len(expression) == 0:
                     expression = expression + temp[i]
@@ -104,4 +105,4 @@ def read_expresion(regex, character):
     temp_3 = list(map(lambda x: derive(x, character), temp_2))
     return simplify('+'.join(temp_3))
 
-print(derive('(a+b)a + ba', 'b'))
+print(read_expresion('(a+baa)* + ba', 'b'))

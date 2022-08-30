@@ -56,13 +56,15 @@ class DFA:
                     states.append(possible_states[i])
                     current_state.set_transition(Transition(alphabet[i], possible_states[i]))
  
+        temp_states = []
         for i in range(len(states)):
             if states[i].get_regex() == initial_state.get_regex():
-                states.remove(states[i])
-                i = 0
+                pass
+            else:
+                temp_states.append(states[i])
 
-        states.insert(0, initial_state)
-        self.states = states
+        temp_states.insert(0, initial_state)
+        self.states = temp_states
         self.set_names()
         
         
@@ -74,17 +76,47 @@ class DFA:
             return True
 
         while text != 'ε':
-            regex = derive(regex, text[0])
+            regex = read_expresion(regex, text[0])
             text = read_expresion(text, text[0])
             
-        print(regex)
-        print(text)
-
         if regex == text:
             return True
 
         elif len(regex) == 2 and regex.endswith('*'):
             return True
+
+        temp = regex.split('+')
+        temp_2 = []
+        expression = ''
+        parenthesis = False
+        for i in range(len(temp)):
+            if '(' in temp[i] and not ')' in temp[i] or parenthesis:
+                if ')' in temp[i]:
+                    if len(expression) == 0:
+                        expression = expression + temp[i]
+                    else:
+                        expression = expression + '+' + temp[i]
+                    parenthesis = False
+                    temp_2.append(expression)
+                    expression = ''
+                else:
+                    if len(expression) == 0:
+                        expression = expression + temp[i]
+                    else:
+                        expression = expression + '+' + temp[i]
+                    parenthesis = True
+            else:
+                temp_2.append(temp[i])
+                parenthesis = False
+                expression = ''
+
+        print(temp_2)
+
+        for x in temp_2:
+            if x.startswith('(') and x.endswith('*'):
+                return True
+        
+        return False
 
 
     def show_states(self):
