@@ -3,19 +3,33 @@ from tkinter import font
 from state import State
 from dfa import DFA
 
+dfa = DFA()
+
 def generate_afd():
     # Obtenemos el valor del input
     value = regex_input.get()
     # Creamos estado con la expresion regular ingresada
     initial_state = State(value)
     # Creamos afd a partir de la expresion regular
-    dfa = DFA()
     dfa.create_dfa(initial_state)
     
     resultado.config(text = dfa.show_states())
 
 def validate_string():
-    pass
+    top= Toplevel(ventana)
+    top.geometry("400x250")
+    top.title("Result")
+    top.config(bg='#001219')
+    resultado_validacion = Label(top, text = '', justify=LEFT)
+    resultado_validacion.config(font='Monospace', fg='white', bg='#001219')
+    resultado_validacion.grid(row=0, column=0, padx=20, pady=20, columnspan=2)
+
+    result = dfa.verify_string(validar_input.get())
+    if result == 0:
+        resultado_validacion.config(text = 'Falso')
+    else:
+        resultado_validacion.config(text = 'Verdadero')
+
 
 # Ventana principal
 ventana = Tk()
@@ -49,7 +63,7 @@ validar_input.config(font='Monospace', bg='#001219', fg='white')
 validar_input.grid(row=3, column=0, padx=20, pady=20)
 
 # Boton para validar string
-button = Button(text='Validar String', width=25, command=validar_string)
+button = Button(text='Validar String', width=25, command=validate_string)
 button.config(bg='springgreen', borderwidth=0, font='Monospace', highlightbackground='#001219', activebackground='black', activeforeground='white')
 button.grid(row=3, column=1, padx=20, pady=20)
 
@@ -57,5 +71,10 @@ button.grid(row=3, column=1, padx=20, pady=20)
 resultado = Label(ventana, text = '', justify=LEFT)
 resultado.config(font='Monospace', fg='white', bg='#001219')
 resultado.grid(row=4, column=0, padx=20, pady=20, columnspan=2)
+
+# Label donde se mostrará el resultado de la validacion del string
+resultado_validacion = Label(ventana, text = '', justify=LEFT)
+resultado_validacion.config(font='Monospace', fg='white', bg='#001219')
+resultado_validacion.grid(row=4, column=0, padx=20, pady=20, columnspan=2)
 
 ventana.mainloop()
