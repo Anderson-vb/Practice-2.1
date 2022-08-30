@@ -1,9 +1,11 @@
 alphabet = []
 
 def get_alphabet(regex):
+    alowed_characters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+
     global alphabet
     alphabet.clear()
-    alphabet = [i for i in regex if i != '+' and i != '*' and i != '(' and i != ')']
+    alphabet = [i for i in regex if i in alowed_characters or type(i) == int]
     temp = []
     for x in alphabet:
         if x not in temp:
@@ -105,4 +107,56 @@ def read_expresion(regex, character):
     temp_3 = list(map(lambda x: derive(x, character), temp_2))
     return simplify('+'.join(temp_3))
 
-print(read_expresion('(a+baa)* + ba', 'b'))
+def verify_regex(regex):
+    characters = get_alphabet(regex)
+    operators = []
+    error_characters = []
+    error = False
+    text = ''
+
+    for x in regex:
+        
+        if x == '(' or x == ')' or x == '+' or x == '*':
+            operators.append(x)
+        elif x not in characters and type(x) != int:
+            error_characters.append(x)
+            error = True
+
+    if '**' in regex:
+        text = text + 'Error: La expresion "**" no es valida \n'
+        error = True
+    if '++' in regex:
+        text = text + 'Error: La expresion "++" no es valida \n'
+        error = True
+
+    for x in error_characters:
+        text = text + f'Error: El caracter {x} no es valido \n'
+
+    if operators.count('(') > operators.count(')'):
+        text = text + 'Error: ")" esperado \n'
+        error = True
+    if operators.count('(') < operators.count(')'):
+        text = text + 'Error: "(" esperado \n'
+        error = True
+
+    if regex.startswith('+'):
+        text = text + 'Error: El caracter "+" no puede ir al inicio de la expresion \n'
+        error = True
+    if regex.endswith('+'):
+        text = text + 'Error: El caracter "+" no puede ir al final de la expresion \n'
+        error = True
+
+    if regex.startswith('*'):
+        text = text + 'Error: El caracter "*" no puede ir al inicio de la expresion \n'
+        error = True
+    if regex.endswith('*'):
+        text = text + 'Error: El caracter "*" no puede ir al final de la expresion \n'
+        error = True
+
+
+
+
+    return [error, text]
+
+
+verify_regex('(a+b)**')

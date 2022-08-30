@@ -2,33 +2,62 @@ from tkinter import *
 from tkinter import font
 from state import State
 from dfa import DFA
+from derive import *
 
 dfa = DFA()
 
 def generate_afd():
     # Obtenemos el valor del input
     value = regex_input.get()
-    # Creamos estado con la expresion regular ingresada
-    initial_state = State(value)
-    # Creamos afd a partir de la expresion regular
-    dfa.create_dfa(initial_state)
-    
-    resultado.config(text = dfa.show_states())
+
+    error_test = verify_regex(value)
+
+    if not error_test[0]:
+        # Creamos estado con la expresion regular ingresada
+        initial_state = State(value)
+        # Creamos afd a partir de la expresion regular
+        dfa.create_dfa(initial_state)
+        resultado.config(text = dfa.show_states())
+    else: 
+        top= Toplevel(ventana)
+        top.geometry("400x250")
+        top.title("Result")
+        top.config(bg='#001219')
+        error_message = Label(top, text = '', justify=LEFT)
+        error_message.config(font='Monospace', fg='white', bg='#001219', text=error_test[1])
+        error_message.grid(row=0, column=0, padx=20, pady=20, columnspan=2)
+
+
 
 def validate_string():
-    top= Toplevel(ventana)
-    top.geometry("400x250")
-    top.title("Result")
-    top.config(bg='#001219')
-    resultado_validacion = Label(top, text = '', justify=LEFT)
-    resultado_validacion.config(font='Monospace', fg='white', bg='#001219')
-    resultado_validacion.grid(row=0, column=0, padx=20, pady=20, columnspan=2)
 
-    result = dfa.verify_string(validar_input.get())
-    if result == 0:
-        resultado_validacion.config(text = 'Falso')
+    value = regex_input.get()
+    error_test = verify_regex(value)
+
+    if not error_test[0]:
+    
+        top= Toplevel(ventana)
+        top.geometry("400x250")
+        top.title("Result")
+        top.config(bg='#001219')
+        resultado_validacion = Label(top, text = '', justify=LEFT)
+        resultado_validacion.config(font='Monospace', fg='white', bg='#001219')
+        resultado_validacion.grid(row=0, column=0, padx=20, pady=20, columnspan=2)
+ 
+        result = dfa.verify_string(validar_input.get())
+        if result == 0:
+            resultado_validacion.config(text = 'Falso')
+        else:
+            resultado_validacion.config(text = 'Verdadero')
     else:
-        resultado_validacion.config(text = 'Verdadero')
+        top= Toplevel(ventana)
+        top.geometry("400x250")
+        top.title("Result")
+        top.config(bg='#001219')
+        error_message = Label(top, text = '', justify=LEFT)
+        error_message.config(font='Monospace', fg='white', bg='#001219', text=error_test[1])
+        error_message.grid(row=0, column=0, padx=20, pady=20, columnspan=2)
+
 
 
 # Ventana principal
