@@ -5,7 +5,7 @@ def get_alfabeto(regex):
 
     global alfabeto
     alfabeto.clear()
-    alfabeto = [i for i in regex if i in caracteres_permitidos or type(i) == int]
+    alfabeto = [i for i in regex if i in caracteres_permitidos]
     temp = []
     for x in alfabeto:
         if x not in temp:
@@ -24,6 +24,7 @@ def simplificar(regex):
     temp_2 = [i for i in temp if '∅' not in i]
     return '∅' if len(temp_2) == 0 else '+'.join([eliminar_epsilon(i) for i in temp_2])
 
+# Esta funcion retorna la derivada de una expresión regular con respecto a un caracter
 def derivar(regex, character):
 
     regex = regex.replace(' ', '') 
@@ -70,7 +71,8 @@ def derivar(regex, character):
     elif '*' in regex:
         return simplificar(derivar(regex[:-1], character) + '('  + regex + ')')
 
-
+# Esta función se encarga de leer la expresion regular y dividirla en las subexpresiones necesarias, para 
+# luego derivarlas y retornar la derivada completa de la expresion regular
 def leer_expresion(regex, character):
     temp = regex.split('+')
     temp_2 = []
@@ -100,6 +102,7 @@ def leer_expresion(regex, character):
     temp_3 = list(map(lambda x: derivar(x, character), temp_2))
     return simplificar('+'.join(temp_3))
 
+# Esta función se encarga de verificar que la expresión regular esté correctamente escrita
 def verificar_errores(regex):
     caracteres = get_alfabeto(regex)
     operadores = []
@@ -108,10 +111,10 @@ def verificar_errores(regex):
     texto = ''
 
     for x in regex:
-        
+
         if x == '(' or x == ')' or x == '+' or x == '*':
             operadores.append(x)
-        elif x not in caracteres and type(x) != int:
+        elif x not in caracteres:
             caracteres_erroneos.append(x)
             error = True
 

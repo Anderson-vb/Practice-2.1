@@ -6,15 +6,17 @@ from derivar import *
 
 dfa = AFD()
 
-def popup(title, message):
+# Esta función crea una nueva ventana con el titulo y el mensaje ingresado
+def popup(titulo, mensaje):
     top= Toplevel(ventana)
     top.geometry("650x250")
-    top.title(title)
+    top.title(titulo)
     top.config(bg='#001219')
     mensaje_error = Label(top, text = '', justify=LEFT)
-    mensaje_error.config(font='Monospace', fg='white', bg='#001219', text=message)
+    mensaje_error.config(font='Monospace', fg='white', bg='#001219', text=mensaje)
     mensaje_error.grid(row=0, column=0, padx=20, pady=20, columnspan=2)
 
+# Esta función se encarga de crear el AFD y mostrarlo en pantalla
 def generar_afd():
     user_regex = regex_input.get()
     verificacion_errores = verificar_errores(user_regex)
@@ -25,6 +27,7 @@ def generar_afd():
     else: 
         popup('Resultado', verificacion_errores[1])
 
+# Esta función se encarga de validar la cadena de texto sobre el AFD ingresado y mostrar el resultado en pantalla
 def validar_string():
     user_regex = regex_input.get()
     verificacion_errores = verificar_errores(user_regex)
@@ -77,10 +80,5 @@ button.grid(row=3, column=1, padx=20, pady=20)
 dfa_label = Label(ventana, text = '', justify=LEFT)
 dfa_label.config(font='Monospace', fg='white', bg='#001219')
 dfa_label.grid(row=4, column=0, padx=20, pady=20, columnspan=2)
-
-# Label donde se mostrará el resultado de la validacion del string
-resultado_validacion = Label(ventana, text = '', justify=LEFT)
-resultado_validacion.config(font='Monospace', fg='white', bg='#001219')
-resultado_validacion.grid(row=4, column=0, padx=20, pady=20, columnspan=2)
 
 ventana.mainloop()

@@ -15,6 +15,7 @@ class AFD:
         for i in range(len(self.estados)):
             self.estados[i].set_nombre('q' + str(i))
 
+    # Esta función se encarga de crear todos los estados con sus respectivas transiciones
     def crear_afd(self, initial_state: Estado):
         
         alfabeto = get_alfabeto(initial_state.get_regex())
@@ -66,8 +67,8 @@ class AFD:
         estados_temporales.insert(0, initial_state)
         self.estados = estados_temporales
         self.set_nombres()
-        
-        
+            
+    # Esta función se encarga de validar una cadena de texto sobre el AFD 
     def verificar_expresion(self, texto):
 
         regex = self.estados[0].get_regex()
