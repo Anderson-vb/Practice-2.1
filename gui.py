@@ -32,6 +32,8 @@ def validar_string():
     user_regex = regex_input.get()
     verificacion_errores = verificar_errores(user_regex)
     if not verificacion_errores[0]:
+        estado_inicial = Estado(user_regex)
+        dfa.crear_afd(estado_inicial)
         validate_string_result = dfa.verificar_expresion(validar_input.get())
         if validate_string_result == 0:
             popup('Validacion de String', 'Falso')
