@@ -2,6 +2,7 @@ from random import getstate
 from derivar import *
 from estado import Estado
 from transicion import Transicion
+from tabulate import tabulate
 
 class AFD:
 
@@ -23,10 +24,21 @@ class AFD:
         temp = list(map(lambda x: Estado(leer_expresion(initial_state.get_regex(), x)), alfabeto))
 
         for i in range(len(alfabeto)):
-            if initial_state.get_regex() == temp[i].get_regex():
-                initial_state.set_transicion(Transicion(alfabeto[i], initial_state))
-            else:
-                initial_state.set_transicion(Transicion(alfabeto[i], temp[i]))
+            transicion_ya_agregada = False
+            try:
+                for x in initial_state.get_transiciones().copy():
+                    if temp[i].get_regex() == x.get_estado().get_regex():
+                        transicion_ya_agregada = True
+                        initial_state.set_transicion(Transicion(alfabeto[i], x.get_estado()))
+            except:
+                pass
+
+            if not transicion_ya_agregada:
+
+                if initial_state.get_regex() == temp[i].get_regex():
+                    initial_state.set_transicion(Transicion(alfabeto[i], initial_state))
+                else:
+                    initial_state.set_transicion(Transicion(alfabeto[i], temp[i]))
 
         estados = []
         estados.append(temp[0])
@@ -45,8 +57,12 @@ class AFD:
                 for j in estados:
                     estado_nuevo = True
                     if posibles_estados[i].get_regex() == j.get_regex():
-                        estado_actual.set_transicion(Transicion(alfabeto[i], j))
-                        estado_nuevo = False
+                        if j.get_regex() == initial_state.get_regex():
+                            estado_actual.set_transicion(Transicion(alfabeto[i], initial_state))
+                            estado_nuevo = False
+                        else:
+                            estado_actual.set_transicion(Transicion(alfabeto[i], j))
+                            estado_nuevo = False
                         break
                     elif posibles_estados[i].get_regex() == initial_state.get_regex():
                         estado_actual.set_transicion(Transicion(alfabeto[i], initial_state))
@@ -119,11 +135,20 @@ class AFD:
 
 
     def mostrar_estados(self):
-        texto = ''
+        # Crear datos
+        data = []
         for x in self.estados:
-            texto = texto + x.get_nombre() + ': ' + x.get_regex() + '\n'
-            for y in x.get_transicion():
-                texto = texto +  y.get_caracter() + ' -> ' + y.get_estado().get_regex() + '\n'
-        return texto
+            temp = []
+            temp.append(x.get_nombre())
+            for y in x.get_transiciones():
+                temp.append(y.get_estado().get_nombre())
+            data.append(temp)
 
+        # Definir nombres de las columnas
 
+        alfabeto = get_alfabeto(self.estados[0].get_regex())
+        col_names = ['Estados']
+        for x in alfabeto:
+            col_names.append(x)
+
+        return tabulate(data, headers=col_names)

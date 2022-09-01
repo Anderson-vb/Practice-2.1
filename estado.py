@@ -17,7 +17,7 @@ class Estado:
     def get_regex(self):
         return self.regex
     
-    def get_transicion(self):
+    def get_transiciones(self):
         return self.transiciones
 
     def get_nombre(self):
